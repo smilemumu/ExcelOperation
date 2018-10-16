@@ -45,6 +45,7 @@ public class StatisticsController {
                     count++;
                     expiredDescription.append("《"+archives2.getTitle()+"》、");
                 }
+                expiredDescription.deleteCharAt(expiredDescription.length()-1);
                 expiredDescription.append("等"+count+"份文件已到销毁期，请及时处理！");
             }else{
                 expiredDescription.append("暂无文件到销毁期");
