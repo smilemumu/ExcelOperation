@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szc.excel.mapper.ArchivesMapper">
+  <resultMap id="BaseResultMap" type="com.szc.excel.domain.Archives">
+    <id column="virtual_id" jdbcType="INTEGER" property="virtualId" />
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="file_id" jdbcType="VARCHAR" property="fileId" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    virtual_id, id, file_id, level, date, summary, note
+  </sql>
+  
+   <select id="selectByColumSelective" parameterType="HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from archives
+    <where> 
+    <if test="virtualId!=null and virtualId!='' "> 
+			virtual_id =#{virtualId}
+		</if>
+		<if test="id!=null and id!='' "> 
+			id =#{id}
+		</if>
+		<if test="fileId!=null and fileId!='' "> 
+		and file_id=#{fileId}
+		</if>
+		<if test="level!=null and level!='' "> 
+		and level=#{level}
+		</if>
+		<if test="start!=null and start!='' "> 
+		and date&gt;=#{start}
+		</if>
+		<if test="end!=null and end!='' "> 
+		and date&lt;=#{end}
+		</if>
+		<if test="summary!=null and summary!='' "> 
+		and summary like CONCAT('%',#{summary},'%')
+		</if>
+		<if test="note!=null and note!='' "> 
+		and	note like CONCAT('%',#{note},'%')
+		</if>
+	</where>
+	limit #{page},#{constant}  
+  </select>
+  
+     <select id="selectByColumSelectiveCount" parameterType="HashMap" resultType="java.lang.Integer">
+    select count(*) from archives
+    <where> 
+     <if test="virtualId!=null and virtualId!='' "> 
+			virtual_id =#{virtualId}
+		</if>
+		<if test="id!=null and id!='' "> 
+			id =#{id}
+		</if>
+		<if test="fileId!=null and fileId!='' "> 
+		and file_id=#{fileId}
+		</if>
+		<if test="level!=null and level!='' "> 
+		and level=#{level}
+		</if>
+		<if test="start!=null and start!='' "> 
+		and date&gt;=#{start}
+		</if>
+		<if test="end!=null and end!='' "> 
+		and date&lt;=#{end}
+		</if>
+		<if test="summary!=null and summary!='' "> 
+		and	summary like CONCAT('%',#{summary},'%')
+		</if>
+		<if test="note!=null and note!='' "> 
+		and	note like CONCAT('%',#{note},'%')
+		</if>
+	</where>
+  </select>
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from archives
+    where virtual_id = #{virtualId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from archives
+    where virtual_id = #{virtualId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.szc.excel.domain.Archives">
+    insert into archives (virtual_id, id, file_id, 
+      level, date, summary, 
+      note)
+    values (#{virtualId,jdbcType=INTEGER}, #{id,jdbcType=VARCHAR}, #{fileId,jdbcType=VARCHAR}, 
+      #{level,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szc.excel.domain.Archives">
+    insert into archives
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="virtualId != null">
+        virtual_id,
+      </if>
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fileId != null">
+        file_id,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+      <if test="summary != null">
+        summary,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="virtualId != null">
+        #{virtualId,jdbcType=INTEGER},
+      </if>
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null">
+        #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null">
+        #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szc.excel.domain.Archives">
+    update archives
+    <set>
+      <if test="id != null">
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null">
+        file_id = #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        date = #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null">
+        summary = #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where virtual_id = #{virtualId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szc.excel.domain.Archives">
+    update archives
+    set id = #{id,jdbcType=VARCHAR},
+      file_id = #{fileId,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      date = #{date,jdbcType=VARCHAR},
+      summary = #{summary,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR}
+    where virtual_id = #{virtualId,jdbcType=INTEGER}
+  </update>
+</mapper>

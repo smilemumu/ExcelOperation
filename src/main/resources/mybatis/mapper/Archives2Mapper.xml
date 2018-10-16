@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szc.excel.mapper.Archives2Mapper">
+  <resultMap id="BaseResultMap" type="com.szc.excel.domain.Archives2">
+    <id column="virtual_id" jdbcType="INTEGER" property="virtualId" />
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="file_id" jdbcType="VARCHAR" property="fileId" />
+    <result column="roll_id" jdbcType="VARCHAR" property="rollId" />
+    <result column="response_person" jdbcType="VARCHAR" property="responsePerson" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="page_count" jdbcType="INTEGER" property="pageCount" />
+    <result column="file_type" jdbcType="VARCHAR" property="fileType" />
+    <result column="secret_date" jdbcType="VARCHAR" property="secretDate" />
+    <result column="file_color" jdbcType="VARCHAR" property="fileColor" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    virtual_id, id, file_id,roll_id, response_person, title, level, date, summary, note, page_count,
+    file_type, secret_date, file_color
+  </sql>
+  <select id="selectStatistics"  resultType="com.szc.excel.domain.Statistics" parameterType="HashMap">
+    select count(id) as fileCount,count(DISTINCT roll_id) as rollCount from archives_2
+    <where>
+    1=1
+    <if test="start != null">
+      and date between #{start,jdbcType=VARCHAR} and #{end,jdbcType=VARCHAR}
+    </if>
+    </where>
+  </select>
+
+  <select id="selectTypeStatistics"  resultType="com.szc.excel.domain.TypeStatistics" parameterType="HashMap">
+    select count(id) as fileCount,count(DISTINCT roll_id) as rollCount,file_type as fileType from archives_2
+    <where>
+      1=1
+      <if test="start != null">
+        and date between #{start,jdbcType=VARCHAR} and #{end,jdbcType=VARCHAR}
+      </if>
+    </where>
+    group by file_type;
+  </select>
+
+
+
+
+  <select id="selectExpiredData"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from archives_2
+    where TO_DAYS(DATE_ADD(date,INTERVAL CONCAT(secret_date) YEAR)) -TO_DAYS(now())&lt;=0
+    and date!='';
+  </select>
+
+
+  <select id="selectByColumSelective" parameterType="HashMap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from archives_2
+    <where>
+       1=1
+      <if test="id != null">
+        and id like #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="fileId != null">
+        and file_id like #{fileId,jdbcType=VARCHAR}
+      </if>
+      <if test="responsePerson != null">
+        and  response_person like #{responsePerson,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null">
+        and  title like #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="level != null">
+        and   level = #{level,jdbcType=VARCHAR}
+      </if>
+      <if test="start != null">
+        and date between #{start,jdbcType=VARCHAR} and #{end,jdbcType=VARCHAR}
+      </if>
+      <if test="summary!=null ">
+        and summary like CONCAT('%',#{summary},'%')
+      </if>
+      <if test="note!=null">
+        and	note like CONCAT('%',#{note},'%')
+      </if>
+      <if test="pageCount != null">
+        and  page_count = #{pageCount,jdbcType=INTEGER}
+      </if>
+      <if test="fileType != null">
+        and    file_type = #{fileType,jdbcType=VARCHAR}
+      </if>
+      <if test="secretDate != null">
+        and  secret_date = #{secretDate,jdbcType=VARCHAR}
+      </if>
+      <if test="fileColor != null">
+        and  file_color = #{fileColor,jdbcType=VARCHAR}
+      </if>
+      <if test="concatField != null">
+        and  concat(virtual_id,id,file_id,response_person,title,note,level,roll_id) like #{concatField,jdbcType=VARCHAR}
+      </if>
+    </where>
+    <if test="page != null">
+      limit #{page},#{constant}
+    </if>
+  </select>
+
+  <select id="selectByColumSelectiveCount" parameterType="HashMap" resultType="java.lang.Integer">
+    select count(*) from archives_2
+    <where>
+      1=1
+      <if test="id != null">
+        and id like #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="fileId != null">
+        and file_id like #{fileId,jdbcType=VARCHAR}
+      </if>
+      <if test="responsePerson != null">
+        and  response_person like #{responsePerson,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null">
+        and  title like #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="level != null">
+        and   level = #{level,jdbcType=VARCHAR}
+      </if>
+      <if test="start != null">
+        and date between #{start,jdbcType=VARCHAR} and #{end,jdbcType=VARCHAR}
+      </if>
+      <if test="summary!=null ">
+        and summary like CONCAT('%',#{summary},'%')
+      </if>
+      <if test="note!=null">
+        and	note like CONCAT('%',#{note},'%')
+      </if>
+      <if test="pageCount != null">
+        and  page_count = #{pageCount,jdbcType=INTEGER}
+      </if>
+      <if test="fileType != null">
+        and    file_type = #{fileType,jdbcType=VARCHAR}
+      </if>
+      <if test="secretDate != null">
+        and  secret_date = #{secretDate,jdbcType=VARCHAR}
+      </if>
+      <if test="fileColor != null">
+        and  file_color = #{fileColor,jdbcType=VARCHAR}
+      </if>
+      <if test="concatField != null">
+        and  concat(virtual_id,id,file_id,response_person,title,note,level,roll_id) like #{concatField,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+
+
+
+
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from archives_2
+    where virtual_id = #{virtualId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from archives_2
+    where virtual_id = #{virtualId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.szc.excel.domain.Archives2">
+    insert into archives_2 (virtual_id, id, file_id, roll_id,
+      response_person, title, level, 
+      date, summary, note, 
+      page_count, file_type, secret_date, 
+      file_color)
+    values (#{virtualId,jdbcType=INTEGER}, #{id,jdbcType=VARCHAR}, #{fileId,jdbcType=VARCHAR},  #{rollId,jdbcType=VARCHAR},
+      #{responsePerson,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, 
+      #{date,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+      #{pageCount,jdbcType=INTEGER}, #{fileType,jdbcType=VARCHAR}, #{secretDate,jdbcType=VARCHAR}, 
+      #{fileColor,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szc.excel.domain.Archives2">
+    insert into archives_2
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="virtualId != null">
+        virtual_id,
+      </if>
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fileId != null">
+        file_id,
+      </if>
+      <if test="rollId != null">
+        roll_id,
+      </if>
+      <if test="responsePerson != null">
+        response_person,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+      <if test="summary != null">
+        summary,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="pageCount != null">
+        page_count,
+      </if>
+      <if test="fileType != null">
+        file_type,
+      </if>
+      <if test="secretDate != null">
+        secret_date,
+      </if>
+      <if test="fileColor != null">
+        file_color,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="virtualId != null">
+        #{virtualId,jdbcType=INTEGER},
+      </if>
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null">
+        #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="rollId != null">
+        #{rollId,jdbcType=VARCHAR},
+      </if>
+      <if test="responsePerson != null">
+        #{responsePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null">
+        #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="pageCount != null">
+        #{pageCount,jdbcType=INTEGER},
+      </if>
+      <if test="fileType != null">
+        #{fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="secretDate != null">
+        #{secretDate,jdbcType=VARCHAR},
+      </if>
+      <if test="fileColor != null">
+        #{fileColor,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szc.excel.domain.Archives2">
+    update archives_2
+    <set>
+      <if test="id != null">
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null">
+        file_id = #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="rollId != null">
+        roll_id = #{rollId,jdbcType=VARCHAR},
+      </if>
+      <if test="responsePerson != null">
+        response_person = #{responsePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        date = #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null">
+        summary = #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="pageCount != null">
+        page_count = #{pageCount,jdbcType=INTEGER},
+      </if>
+      <if test="fileType != null">
+        file_type = #{fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="secretDate != null">
+        secret_date = #{secretDate,jdbcType=VARCHAR},
+      </if>
+      <if test="fileColor != null">
+        file_color = #{fileColor,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where virtual_id = #{virtualId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szc.excel.domain.Archives2">
+    update archives_2
+    set id = #{id,jdbcType=VARCHAR},
+      file_id = #{fileId,jdbcType=VARCHAR},
+    roll_id = #{rollId,jdbcType=VARCHAR},
+      response_person = #{responsePerson,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      date = #{date,jdbcType=VARCHAR},
+      summary = #{summary,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      page_count = #{pageCount,jdbcType=INTEGER},
+      file_type = #{fileType,jdbcType=VARCHAR},
+      secret_date = #{secretDate,jdbcType=VARCHAR},
+      file_color = #{fileColor,jdbcType=VARCHAR}
+    where virtual_id = #{virtualId,jdbcType=INTEGER}
+  </update>
+</mapper>
